@@ -397,6 +397,158 @@ class DbHandler {
 				return false;
 			}       
     }
+    
+    
+    //======================CATEGORIES====================    
+
+    public function getAllCategories() {
+
+        $sql = 'SELECT * FROM category';
+        $result = mysqli_query($this->conn, $sql);
+
+
+        return $result;
+    }
+
+    public function GetCategoryDetail($category_id) {
+
+        $sql = 'SELECT * FROM category WHERE category_id = "' . $category_id . '"';
+        $result = mysqli_query($this->conn, $sql);
+        $row = mysqli_fetch_array($result);
+
+        return $row;
+    }
+
+    public function addCategory($category) {
+
+        $category_name = mysqli_real_escape_string($this->conn, $category['name']);
+        $category_addedby = $category['enteredby'];
+
+        $sql = 'INSERT INTO category (category_name, category_enteredby)
+                VALUES ("' . $category_name . '" , "' . $category_addedby . '" )';
+
+        if (mysqli_query($this->conn, $sql)) {
+            return true;
+        } else {
+
+            return false;
+        }
+    }
+
+    public function updateCateory($category_name, $category_id) {
+
+        $category_name = mysqli_real_escape_string($this->conn, $category_name);
+        $sql = 'UPDATE category SET category_name="' . $category_name . '" 
+                 WHERE category_id = "' . $category_id . '"';
+
+        if (mysqli_query($this->conn, $sql)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function deleteCategory($id) {
+
+        $sql = 'DELETE FROM category WHERE category_id = "' . $id . '"';
+        if (mysqli_query($this->conn, $sql)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+//   ====================SUB-CATEGORIES=====================================
+
+    //get all sub categories
+    public function getAllsubCategorys() {
+
+        $sql = 'SELECT * FROM category_sub WHERE category_sub_status = 1 ';
+        $result = mysqli_query($this->conn, $sql);
+
+        if (mysqli_num_rows($result) < 1) {
+            return FALSE;
+        }
+
+        return $result;
+    }
+    
+    //get induvidual sub category details
+    public function GetsubCategoryDetail($subCategory_id) {
+
+        $sql = 'SELECT * FROM category_sub 
+                WHERE category_sub_id = "' .$subCategory_id. '"
+                AND category_sub_status = 1';
+
+        $result = mysqli_query($this->conn, $sql);
+
+        if (mysqli_num_rows($result) < 1) {
+            return FALSE;
+        }
+        $row = mysqli_fetch_array($result);
+
+        return $row;
+    }
+    
+    //create sub category
+    
+    public function addsubCategory($subCategory) {
+
+        $subCategory_name = mysqli_real_escape_string($this->conn, $subCategory['name']);
+        $subCategory_mainCatId = mysqli_real_escape_string($this->conn, $subCategory['mainCatID']);
+        $subCategory_addedby = $subCategory['enteredby'];
+
+        $sql = 'INSERT INTO category_sub (category_sub_name, category_sub_enteredby, category_sub_categoryid)
+                VALUES ("' . $subCategory_name . '" , "' . $subCategory_addedby . '", "' . $subCategory_mainCatId . '" )';
+
+        if (mysqli_query($this->conn, $sql)) {
+            return true;
+        } else {
+
+            return false;
+        }
+    }
+    
+    
+    //update sub category
+    public function updatesubCategory($subCategory, $subCategory_id) {
+
+        $subCategory_name = mysqli_real_escape_string($this->conn, $subCategory['category_sub_name']);
+        $subCategory_maincat = mysqli_real_escape_string($this->conn, $subCategory['mainCatID']);
+        $subCategory_status = mysqli_real_escape_string($this->conn, $subCategory['status']);
+        
+        $sql = 'UPDATE category_sub 
+                SET category_sub_name    = "' .$subCategory_name. '", 
+                category_sub_categoryid  = "' .$subCategory_maincat . '", 
+                category_sub_status      = "' .$subCategory_status . '" 
+                WHERE category_sub_id    = "' .$subCategory_id . '"';
+
+        if (mysqli_query($this->conn, $sql)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    //delete
+    
+     public function deleteSubCategory($id) {
+
+        $sql = 'DELETE FROM  category_sub WHERE category_sub_id = "' . $id . '"';
+        if (mysqli_query($this->conn, $sql)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }   
+    
+    
+    
+    
+    
+    
+    
+    
 
 }
 
